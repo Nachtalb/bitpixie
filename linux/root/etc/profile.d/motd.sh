@@ -1,9 +1,13 @@
 #!/bin/sh
 # Save as bitpixie-motd.sh
 
-VERSION="1.9"
+VERSION="1.14"
+DEVICE_NAME="$(cat /sys/class/dmi/id/sys_vendor) $(cat /sys/class/dmi/id/product_family ) $(cat /sys/class/dmi/id/product_name)"
 
 echo -e "\e[1;36m==== BitPixie Exploit $VERSION ====\e[0m"
+echo -e "\e[1;33mDEVICE INFORMATION:\e[0m"
+echo -e "    \e[32mDevice name:\e[0m $DEVICE_NAME"
+echo
 echo -e "\e[1;33mRUNNING THE EXPLOIT:\e[0m"
 echo "Basic usage:"
 echo -e "    \e[35mrun-exploit\e[0m"
