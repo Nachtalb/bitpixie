@@ -4,6 +4,9 @@
 # Based on top of https://github.com/alpinelinux/alpine-make-rootfs
 #
 
+# Failsafe
+set -eo pipefail
+
 ## Common functions
 out() { printf "\n\033[32;1m[+] %s \033[0m\n" "$1"; }
 
