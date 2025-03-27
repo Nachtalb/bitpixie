@@ -53,10 +53,13 @@ sudo $CACHE/alpine-make-rootfs \
     --packages 'sgdisk ntfs-3g fuse-common' \
     --packages 'fuse mbedtls musl cifs-utils' \
     --packages 'vis' \
-    --timezone 'Europe/Berlin' \
+    --timezone 'UTC' \
     --script-chroot "$INITRAMFS" - <<'SHELL'
         # Fail if an error occurs
         set -e
+
+        # Fix PATH during build
+        export PATH="/bin:/sbin:$PATH"
 
         # Generate modules.*.bin for modprobe
         depmod $(ls /boot/vmlinuz* |  cut -d "-" -f2-)
