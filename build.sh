@@ -30,7 +30,10 @@ bash -c "$SRC_ROOT/linux/download.sh $SRC_ROOT $CACHE"
 
 # create temporary initramfs direcotry
 INITRAMFS="$(mktemp -d)"
-trap 'sudo rm -rf $INITRAMFS' EXIT
+out "Created temporary rootfs at $INITRAMFS."
+if [ "$DEBUG" = "0" ]; then
+    trap 'sudo rm -rf $INITRAMFS' EXIT
+fi
 
 ## Preprocessing
 # Copy all relevant files
