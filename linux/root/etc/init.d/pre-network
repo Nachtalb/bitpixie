@@ -1,0 +1,26 @@
+#!/sbin/openrc-run
+
+depend() {
+    need net
+    before networking
+}
+
+start() {
+    ebegin "Configuring network interfaces"
+
+    # Create basic interfaces file with loopback
+    echo -e "auto lo\niface lo inet loopback\n" > /etc/network/interfaces
+
+    # Configure all interfaces except lo
+    for iface in $(ls /sys/class/net | grep -v lo); do
+        echo -e "auto $iface\nallow-hotplug $iface\niface $iface inet dhcp\n" >> /etc/network/interfaces
+        ip link set "$iface" up
+    done
+
+    # Restart networking service if it's running
+    if /etc/init.d/networking status >/dev/null 2>&1; then
+        /etc/init.d/networking restart
+    fi
+
+    eend $?
+}
