@@ -1,8 +1,2 @@
 auto lo
 iface lo inet loopback
-
-# Taken from
-# https://github.com/ifupdown-ng/ifupdown-ng/blob/main/doc/ADMIN-GUIDE.md#interface-configuration
-auto eth0
-iface eth0
-    use dhcp

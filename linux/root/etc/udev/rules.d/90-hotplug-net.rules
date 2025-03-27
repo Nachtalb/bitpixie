@@ -1,0 +1,2 @@
+# Rule for automatically configuring hotplugged network interfaces
+ACTION=="add", SUBSYSTEM=="net", RUN+="/bin/sh /etc/udev/hotplug-net.sh '$env{INTERFACE}'"
