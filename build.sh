@@ -151,25 +151,25 @@ if [ "$?" = "1" ]; then
     exit 1
 fi
 
-if [ "$DEBUG" = "1" ]; then
-    COMPRESS="gzip"
-    FILE_EXTENSION="gz"
-else
-    # Use a compression algorithm to compress to the most possible (because the
-    # initramfs needs to be loaded via PXE)
-    COMPRESS="xz -z -C crc32 -9 --threads=0 -c -"
-    FILE_EXTENSION="xz"
-fi
+# Production: zstd with near-maximum compression but multithreaded
+COMPRESS="zstd -T0 -9 --ultra -c"
+FILE_EXTENSION="zst"
 
 OUTPUT="$SRC_ROOT/pxe-server/bitpixie-initramfs"
-# Just for correct logging for user
-RELATIVE_OUTPUT="$(realpath --relative-to $SRC_ROOT $OUTPUT)"
+RELATIVE_OUTPUT="$(realpath --relative-to "$SRC_ROOT" "$OUTPUT")"
 
 out "Creating initramfs $RELATIVE_OUTPUT from temporary rootfs at $INITRAMFS..."
-# Note: Needs to be run as root because all files in the rootfs are chowned by root
-(cd $INITRAMFS; sudo bash -c "find . | cpio -o -H newc | $COMPRESS") > $OUTPUT
 
-out "Created initramfs $RELATIVE_OUTPUT with file extension ${FILE_EXTENSION} at $(dirname $OUTPUT)."
+# Use parallel cpio creation if supported (bsdtar is faster than GNU cpio)
+if command -v bsdtar >/dev/null; then
+    (cd "$INITRAMFS" && sudo bsdtar -cf - --format=newc . | $COMPRESS) > "$OUTPUT"
+else
+    # Fallback to standard cpio with parallel compression
+    (cd "$INITRAMFS" && sudo find . | sudo cpio -o -H newc | $COMPRESS) > "$OUTPUT"
+fi
+
+out "Created compressed initramfs ($FILE_EXTENSION) at $RELATIVE_OUTPUT"
+out "To decrypt use 'zstd -dc path/to/bitpixie-initramfs.zst | sudo cpio -idv'"
 
 if [ "$DEBUG" = "1" ]; then
     # Deactivate deletion of INITRAMFS
