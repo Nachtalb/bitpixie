@@ -64,6 +64,9 @@ sudo $CACHE/alpine-make-rootfs \
         # Fix PATH during build
         export PATH="/bin:/sbin:$PATH"
 
+        # Fix missing links
+        $(which busybox) --install -s /bin
+
         # Generate modules.*.bin for modprobe
         depmod $(ls /boot/vmlinuz* |  cut -d "-" -f2-)
 
