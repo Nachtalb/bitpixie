@@ -177,6 +177,20 @@ fi
 out "Created compressed initramfs ($FILE_EXTENSION) at $RELATIVE_OUTPUT"
 out "To decrypt use 'zstd -dc path/to/bitpixie-initramfs.zst | sudo cpio -idv'"
 
+mkdir -p out
+
+OUT_DIR="$SRC_ROOT/out"
+PXE_SERVER="$(realpath --relative-to "$SRC_ROOT" "$SRC_ROOT/pxe-server")"
+TAR_GZ="$(realpath --relative-to "$SRC_ROOT" "$OUT_DIR/$PXE_SERVER.tar.gz")"
+
+if command -v pigz &> /dev/null; then
+    out "Creating $TAR_GZ using pigz"
+    tar -cf - "$PXE_SERVER" | pigz -9 > "$TAR_GZ"
+else
+    out "Creating $TAR_GZ using gzip"
+    tar -czf "$TAR_GZ" "$PXE_SERVER"
+fi
+
 if [ "$DEBUG" = "1" ]; then
     # Deactivate deletion of INITRAMFS
     trap - EXIT
