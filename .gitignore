@@ -4,3 +4,4 @@ pxe-server/shimx64.efi
 pxe-server/grubx64.efi
 pxe-server/bitpixie-initramfs*
 pxe-server/Boot/BCD
+out/
