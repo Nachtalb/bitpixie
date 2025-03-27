@@ -48,7 +48,7 @@ sudo $CACHE/alpine-make-rootfs \
     --branch latest-stable \
     --packages 'alpine-base agetty eudev chntpw util-linux openssh doas' \
     --packages 'sgdisk ntfs-3g fuse-common' \
-    --packages 'fuse mbedtls musl' \
+    --packages 'fuse mbedtls musl cifs-utils' \
     --packages 'vis' \
     --timezone 'Europe/Berlin' \
     --script-chroot "$INITRAMFS" - <<'SHELL'
