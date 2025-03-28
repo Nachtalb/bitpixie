@@ -18,24 +18,8 @@ bcdedit /store BCD_modded /set {default} winpe yes
 bcdedit /store BCD_modded /displayorder {%REBOOT_GUID%} /addlast
 
 
-setlocal
-:PROMPT
-SET /P AREYOUSURE=Do you want to move the file to the SMB server on 10.13.37.1 (Y/[N])?
-IF /I "%AREYOUSURE%" NEQ "Y" GOTO END
-
 move BCD_modded S:\BCD
-
-goto :EOF
-
-:END
-
-move BCD_modded C:\BCD
-echo "BCD file was moved to C:\BCD"
-
-goto :EOF
-
-endlocal
-
-:EOF
+echo "BCD file was moved to S:\BCD"
+echo "You can now exit and restart into PXE / Network Boot"
 
 pause
